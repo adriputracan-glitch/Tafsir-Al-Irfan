@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+    url('https://i.imgur.com/ShDlSEO.jpeg');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* HEADER */
+header{
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(10px);
+  color:white;
+  padding:15px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.topbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+select,input,textarea{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+}
+
+.admin-btn{
+  margin-left:auto;
+  background:#f59e0b;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* USER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+.ayat-card{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
+  cursor:pointer;
+}
+
+.nomor{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#0f766e;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.arab{
+  font-size:32px;
+  text-align:right;
+  margin:20px 0;
+}
+
+.latin{
+  color:#0f766e;
+  font-style:italic;
+}
+
+.audio-btn{
+  background:#0f766e;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.equalizer{
+  display:flex;
+  align-items:flex-end;
+  gap:3px;
+  height:16px;
+}
+
+.equalizer span{
+  width:3px;
+  background:white;
+  border-radius:3px;
+  animation:bounce 1s infinite ease-in-out;
+}
+
+.equalizer span:nth-child(1){
+  height:6px;
+  animation-delay:0s;
+}
+
+.equalizer span:nth-child(2){
+  height:12px;
+  animation-delay:0.2s;
+}
+
+.equalizer span:nth-child(3){
+  height:8px;
+  animation-delay:0.4s;
+}
+
+@keyframes bounce{
+  0%,100%{
+    transform:scaleY(0.5);
+  }
+
+  50%{
+    transform:scaleY(1.4);
+  }
+}
+
+
+/* POPUP */
+#popup,#adminPopup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.popup-content{
+  background:white;
+  width:90%;
+  max-width:700px;
+  padding:30px;
+  border-radius:20px;
+}
+
+/* ADMIN DASHBOARD */
+.dashboard{
+  display:none;
+  max-width:1000px;
+  margin:40px auto;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+}
+
+button{
+  background:#0f766e;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.loading-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.loading-box{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+}
+
+.spinner{
+  width:50px;
+  height:50px;
+  border:5px solid #ddd;
+  border-top:5px solid #0f766e;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin{
+  100%{
+    transform:rotate(360deg);
+  }
+}
+
+.dashboard{
+  display:none;
+  max-width:1200px;
+  margin:30px auto;
+}
+
+.admin-header{
+  background:white;
+  border-radius:25px;
+  padding:25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.admin-title-box{
+  text-align:center;
+}
+
+.admin-title-box h2{
+  margin:0;
+  color:#0f766e;
+}
+
+.admin-title-box p{
+  margin-top:8px;
+  color:gray;
+}
+
+.logout-btn{
+  background:#0f766e;
+}
+
+.close-btn{
+  background:#ef4444;
+}
+
+.admin-card{
+  background:white;
+  border-radius:25px;
+  padding:30px;
+  margin-bottom:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.card-title{
+  font-size:24px;
+  font-weight:bold;
+  color:#0f766e;
+  margin-bottom:25px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group label{
+  margin-bottom:8px;
+  font-weight:600;
+}
+
+.full-width{
+  margin-top:20px;
+}
+
+input,select,textarea{
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  font-size:14px;
+}
+
+textarea{
+  resize:none;
+}
+
+.preview-box{
+  background:#f8fafc;
+  padding:25px;
+  border-radius:20px;
+  margin-top:25px;
+}
+
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.arab-preview{
+  font-size:30px;
+  text-align:right;
+  line-height:2;
+}
+
+.button-group{
+  display:flex;
+  gap:15px;
+  margin-top:25px;
+}
+
+.reset-btn{
+  background:#6b7280;
+}
+
+.list-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.list-header h3{
+  margin:0;
+  color:#0f766e;
+}
+
+.list-header p{
+  margin:5px 0 0;
+  color:gray;
+}
+
+.table-container{
+  background:#f8fafc;
+  border-radius:15px;
+  padding:20px;
+}
+
+.popup-content{
+  animation:fadeIn .2s ease;
+}
+
+@keyframes fadeIn{
+  from{transform:scale(0.9);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+<div id="clockBox"></div>
+
+<div class="topbar">
+  <h2>📖 Quran Tafsir</h2>
+
+  <select id="suratSelect" onchange="loadSuratUser()"></select>
+
+  <button 
+  class="admin-btn" 
+  id="adminLoginButton"
+  onclick="openAdminLogin()">
+    🔐 Admin Login
+  </button>
+</div>
+</header>
+
+<!-- USER AREA -->
+<div id="userSection">
+
+  <div class="container" id="listAyat">
+    Loading...
+  </div>
+
+</div>
+
+<!-- POPUP TAFSIR -->
+<div id="popup">
+  <div class="popup-content">
+    <span onclick="tutupPopup()">✖</span>
+    <h2 id="popupJudul"></h2>
+    <div id="popupIsi"></div>
+  </div>
+</div>
+
+<!-- POPUP LOGIN ADMIN -->
+<div id="adminPopup">
+  <div class="popup-content">
+
+    <span onclick="closeAdminLogin()">✖</span>
+
+    <h2>🔐 Login Admin</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button id="loginBtn" onclick="loginAdmin()">
+      Login
+    </button>
+
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+
+    <div class="spinner"></div>
+
+    <div id="loadingText" style="margin-top:15px;">
+      Loading...
+    </div>
+
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<!-- ADMIN DASHBOARD MODERN -->
+<div class="dashboard" id="dashboard">
+
+  <!-- HEADER DASHBOARD -->
+  <div class="admin-header">
+
+    <button onclick="logoutAdmin()" class="logout-btn">
+      Logout Admin
+    </button>
+
+    <div class="admin-title-box">
+      <h2>🛠 Dashboard Admin Tafsir</h2>
+      <p>Kelola tafsir Al-Qur'an dengan mudah dan efisien</p>
+    </div>
+
+    <button onclick="document.getElementById('dashboard').style.display='none'"
+      class="close-btn">
+      Tutup Dashboard
+    </button>
+
+  </div>
+
+
+  <!-- FORM -->
+  <div class="admin-card">
+
+    <div class="card-title">
+      ✍ Tambah / Edit Tafsir
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>📖 Pilih Surat</label>
+        <select id="suratAdmin" onchange="loadAyatAdmin()"></select>
+      </div>
+
+      <div class="form-group">
+        <label>🔢 Pilih Ayat</label>
+        <select id="ayat" onchange="previewAyat()">
+          <option value="">Pilih Ayat</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>📝 Judul Tafsir</label>
+        <input type="text"
+          id="judul"
+          placeholder="Masukkan judul tafsir">
+      </div>
+
+      <div class="form-group">
+  <label>👤 Nama Pentafsir</label>
+  <input type="text"
+    id="pentafsir"
+    placeholder="Contoh: Ust. Ahmad, Tim Tafsir">
+</div>
+
+    </div>
+
+        <!-- PREVIEW -->
+    <div id="previewAyatBox" class="preview-box">
+
+      <h3>👁 Preview Ayat</h3>
+
+      <div class="preview-grid">
+
+        <div>
+          <small>Arab</small>
+          <div id="previewArab" class="arab-preview"></div>
+        </div>
+
+        <div>
+          <small>Latin</small>
+          <div id="previewLatin"></div>
+        </div>
+
+        <div>
+          <small>Terjemahan</small>
+          <div id="previewArti"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-group full-width">
+      <label>📚 Isi Tafsir</label>
+      <textarea
+        id="isi"
+        rows="8"
+        placeholder="Masukkan isi tafsir di sini...">
+      </textarea>
+    </div>
+
+
+
+    <div class="button-group">
+      <button id="publishBtn" onclick="publishTafsir()">
+        Publikasikan Tafsir
+      </button>
+
+      <button onclick="resetForm()" class="reset-btn">
+        Reset Form
+      </button>
+    </div>
+
+  </div>
+
+
+  <!-- LIST DATA -->
+  <div class="admin-card">
+
+<div class="list-header">
+  <div>
+    <h3>📚 Daftar Tafsir Tersimpan</h3>
+    <p>Kelola tafsir yang sudah dipublikasikan</p>
+  </div>
+
+  <div style="display:flex; gap:10px; align-items:center;">
+
+    <input type="text"
+      placeholder="Cari judul atau ayat..."
+      style="width:250px;">
+
+    <button onclick="loadTafsir()"
+      style="
+        background:#0f766e;
+        color:white;
+        border:none;
+        padding:10px 15px;
+        border-radius:10px;
+        cursor:pointer;
+      ">
+      🔄 Refresh
+    </button>
+
+  </div>
+</div>
+
+    <div id="listTafsir" class="table-container">
+      Loading data...
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz-nDKHBJKDOa_CIKllsQgVh3L6vnHEpYB1dkkJRQmNdZKP-lUM0RU4E72Nc1OgmwJx/exec";
+/* ================= USER ================= */
+const namaSurat = {
+  1: "Al-Fatihah",
+  2: "Al-Baqarah",
+  3: "Ali 'Imran",
+  4: "An-Nisa",
+  5: "Al-Ma'idah",
+  6: "Al-An'am",
+  7: "Al-A'raf",
+  8: "Al-Anfal",
+  9: "At-Taubah",
+  10: "Yunus",
+  11: "Hud",
+  12: "Yusuf",
+  13: "Ar-Ra'd",
+  14: "Ibrahim",
+  15: "Al-Hijr",
+  16: "An-Nahl",
+  17: "Al-Isra",
+  18: "Al-Kahf",
+  19: "Maryam",
+  20: "Taha",
+  21: "Al-Anbiya",
+  22: "Al-Hajj",
+  23: "Al-Mu’minun",
+  24: "An-Nur",
+  25: "Al-Furqan",
+  26: "Asy-Syu’ara",
+  27: "An-Naml",
+  28: "Al-Qasas",
+  29: "Al-Ankabut",
+  30: "Ar-Rum",
+  31: "Luqman",
+  32: "As-Sajdah",
+  33: "Al-Ahzab",
+  34: "Saba",
+  35: "Fatir",
+  36: "Yasin",
+  37: "As-Saffat",
+  38: "Sad",
+  39: "Az-Zumar",
+  40: "Ghafir",
+  41: "Fussilat",
+  42: "Asy-Syura",
+  43: "Az-Zukhruf",
+  44: "Ad-Dukhan",
+  45: "Al-Jasiyah",
+  46: "Al-Ahqaf",
+  47: "Muhammad",
+  48: "Al-Fath",
+  49: "Al-Hujurat",
+  50: "Qaf",
+  51: "Adz-Dzariyat",
+  52: "At-Tur",
+  53: "An-Najm",
+  54: "Al-Qamar",
+  55: "Ar-Rahman",
+  56: "Al-Waqi’ah",
+  57: "Al-Hadid",
+  58: "Al-Mujadilah",
+  59: "Al-Hasyr",
+  60: "Al-Mumtahanah",
+  61: "As-Saff",
+  62: "Al-Jumu’ah",
+  63: "Al-Munafiqun",
+  64: "At-Taghabun",
+  65: "At-Talaq",
+  66: "At-Tahrim",
+  67: "Al-Mulk",
+  68: "Al-Qalam",
+  69: "Al-Haqqah",
+  70: "Al-Ma’arij",
+  71: "Nuh",
+  72: "Al-Jinn",
+  73: "Al-Muzzammil",
+  74: "Al-Muddassir",
+  75: "Al-Qiyamah",
+  76: "Al-Insan",
+  77: "Al-Mursalat",
+  78: "An-Naba",
+  79: "An-Nazi’at",
+  80: "Abasa",
+  81: "At-Takwir",
+  82: "Al-Infitar",
+  83: "Al-Mutaffifin",
+  84: "Al-Insyiqaq",
+  85: "Al-Buruj",
+  86: "At-Tariq",
+  87: "Al-A’la",
+  88: "Al-Ghasyiyah",
+  89: "Al-Fajr",
+  90: "Al-Balad",
+  91: "Asy-Syams",
+  92: "Al-Lail",
+  93: "Ad-Duha",
+  94: "Al-Insyirah",
+  95: "At-Tin",
+  96: "Al-Alaq",
+  97: "Al-Qadr",
+  98: "Al-Bayyinah",
+  99: "Az-Zalzalah",
+  100: "Al-Adiyat",
+  101: "Al-Qari’ah",
+  102: "At-Takasur",
+  103: "Al-Asr",
+  104: "Al-Humazah",
+  105: "Al-Fil",
+  106: "Quraisy",
+  107: "Al-Ma’un",
+  108: "Al-Kausar",
+  109: "Al-Kafirun",
+  110: "An-Nasr",
+  111: "Al-Lahab",
+  112: "Al-Ikhlas",
+  113: "Al-Falaq",
+  114: "An-Nas"
+}
+
+let semuaSurat=[]
+let currentAudio=null
+
+async function init(){
+  const res=await fetch('https://equran.id/api/v2/surat')
+  const data=await res.json()
+
+  semuaSurat=data.data
+
+  const select=document.getElementById('suratSelect')
+
+  semuaSurat.forEach(s=>{
+    select.innerHTML += `
+      <option value="${s.nomor}">
+        ${s.nomor}. ${s.namaLatin}
+      </option>
+    `
+  })
+
+  select.value=1
+  loadSuratUser()
+}
+
+async function loadSuratUser(){
+
+  const nomor = document.getElementById('suratSelect').value
+
+  const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`)
+  const data = await res.json()
+
+  const response = await fetch(API_URL,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"getAyatYangSudahAdaTafsir",
+      surat:nomor
+    })
+  })
+
+  const ayatTafsir = await response.json()
+
+  const container = document.getElementById('listAyat')
+  container.innerHTML=''
+
+  data.data.ayat.forEach(a=>{
+
+    const adaTafsir = ayatTafsir.includes(String(a.nomorAyat))
+
+    container.innerHTML += `
+      <div class="ayat-card"
+        onclick="lihatTafsir('${data.data.nomor}','${a.nomorAyat}')">
+
+        <div class="nomor">${a.nomorAyat}</div>
+
+        ${
+          adaTafsir
+          ? `<div style="
+              display:inline-block;
+              background:#dcfce7;
+              color:#166534;
+              padding:6px 12px;
+              border-radius:20px;
+              font-size:12px;
+              margin-top:10px;
+              font-weight:bold;
+            ">
+            📚 Tafsir tersedia
+          </div>`
+          : ''
+        }
+
+        <div class="arab">${a.teksArab}</div>
+        <div class="latin">${a.teksLatin}</div>
+        <div>${a.teksIndonesia}</div>
+
+        <button class="audio-btn"
+          onclick="putarAudio(event,'${a.audio['01']}')">
+          ▶ Audio
+        </button>
+
+      </div>
+    `
+  })
+}
+
+async function lihatTafsir(surat, ayat){
+
+  document.getElementById('popup').style.display='flex'
+  document.getElementById('popupJudul').innerHTML='📖 Tafsir Ayat'
+  document.getElementById('popupIsi').innerHTML='Memuat...'
+
+  const response = await fetch(API_URL,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"getTafsir",
+      surat:surat,
+      ayat:ayat
+    })
+  })
+
+  const res = await response.json()
+
+  if(res){
+    document.getElementById('popupJudul').innerHTML =
+      '📖 ' + res.judul
+
+    document.getElementById('popupIsi').innerHTML = `
+      <div style="margin-bottom:10px;">
+        <small style="color:gray;">
+          ✍ Sumber: ${res.pentafsir || '-'}
+        </small>
+      </div>
+      <div>${res.isi}</div>
+    `
+  }else{
+    document.getElementById('popupIsi').innerHTML =
+      'Tafsir belum tersedia'
+  }
+}
+
+function tutupPopup(){
+  document.getElementById('popup').style.display='none'
+}
+
+let activeButton=null
+
+function putarAudio(event,url){
+
+  event.stopPropagation()
+
+  const clickedButton = event.target
+
+  // stop audio sebelumnya
+  if(currentAudio){
+    currentAudio.pause()
+
+    if(activeButton){
+      activeButton.innerHTML='▶ Audio'
+    }
+  }
+
+  currentAudio = new Audio(url)
+  activeButton = clickedButton
+
+  // ubah tombol jadi animasi
+  activeButton.innerHTML=`
+    <div class="equalizer">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    Memutar...
+  `
+
+  currentAudio.play()
+
+  currentAudio.onended = function(){
+  activeButton.innerHTML = '▶ Audio'
+  currentAudio = null
+  activeButton = null
+}
+}
+
+/* ================= ADMIN POPUP ================= */
+
+function openAdminLogin(){
+  document.getElementById('adminPopup').style.display='flex'
+}
+
+function closeAdminLogin(){
+  document.getElementById('adminPopup').style.display='none'
+}
+
+/* ================= LOGIN ADMIN ================= */
+
+function loginAdmin(){
+
+  const email = document.getElementById('email').value
+  const password = document.getElementById('password').value
+
+  document.getElementById('loginBtn').disabled = true
+  document.getElementById('loginBtn').innerHTML = 'Logging in...'
+
+  showLoading('Memproses login admin...')
+
+  const response = await fetch(API_URL,{
+  method:"POST",
+  body:new URLSearchParams({
+    action:"loginAdmin",
+    email:email,
+    password:password
+  })
+})
+
+const res = await response.json()
+
+      hideLoading()
+
+      document.getElementById('loginBtn').disabled = false
+      document.getElementById('loginBtn').innerHTML = 'Login'
+
+      if(res.success){
+
+        // tutup popup login
+        document.getElementById('adminPopup').style.display = 'none'
+
+        // sembunyikan halaman user
+        document.getElementById('userSection').style.display = 'none'
+
+        // sembunyikan footer
+        document.getElementById('mainFooter').style.display = 'none'
+
+        // sembunyikan tombol login admin
+        document.getElementById('adminLoginButton').style.display = 'none'
+
+        // ganti judul header
+        document.querySelector('.topbar h2').innerHTML =
+          '🛠 Dashboard Admin Tafsir'
+
+        // tampilkan dashboard
+        document.getElementById('dashboard').style.display = 'block'
+
+        loadSuratAdmin()
+        loadTafsir()
+
+        window.scrollTo({
+          top:0,
+          behavior:'smooth'
+        })
+
+      } else {
+
+        alert(res.message)
+
+      }
+
+    })
+    .withFailureHandler(function(err){
+      hideLoading()
+
+      document.getElementById('loginBtn').disabled = false
+      document.getElementById('loginBtn').innerHTML = 'Login'
+
+      alert("Terjadi error: " + err.message)
+    })
+    .loginAdmin(email, password)
+}
+
+/* ================= ADMIN LOAD SURAT ================= */
+
+let currentAyat=[]
+
+async function loadSuratAdmin(){
+
+  const res=await fetch('https://equran.id/api/v2/surat')
+  const data=await res.json()
+
+  const select=document.getElementById('suratAdmin')
+  select.innerHTML=''
+
+  data.data.forEach(s=>{
+    select.innerHTML += `
+      <option value="${s.nomor}">
+        ${s.nomor}. ${s.namaLatin}
+      </option>
+    `
+  })
+
+  loadAyatAdmin()
+}
+
+async function loadAyatAdmin(){
+
+  const nomor=document.getElementById('suratAdmin').value
+
+  const res=await fetch(`https://equran.id/api/v2/surat/${nomor}`)
+  const data=await res.json()
+
+  currentAyat=data.data.ayat
+
+  const ayat=document.getElementById('ayat')
+  ayat.innerHTML='<option>Pilih Ayat</option>'
+
+  currentAyat.forEach(a=>{
+    ayat.innerHTML += `
+      <option value="${a.nomorAyat}">
+        Ayat ${a.nomorAyat}
+      </option>
+    `
+  })
+}
+
+function previewAyat(){
+
+  const nomor=document.getElementById('ayat').value
+  const ayat=currentAyat.find(a=>a.nomorAyat==nomor)
+
+  if(!ayat) return
+
+  document.getElementById('previewAyatBox').style.display='block'
+  previewArab.innerHTML=ayat.teksArab
+  previewLatin.innerHTML=ayat.teksLatin
+  previewArti.innerHTML=ayat.teksIndonesia
+}
+
+/* ================= PUBLISH ================= */
+
+let editRow=null
+
+function publishTafsir(){
+
+  const data={
+    row:editRow,
+    surat:document.getElementById('suratAdmin').value,
+    ayat:document.getElementById('ayat').value,
+    judul:document.getElementById('judul').value,
+    pentafsir:document.getElementById('pentafsir').value,
+    isi:document.getElementById('isi').value,
+    isi_tafsir:document.getElementById('isi').value
+  }
+
+  document.getElementById('publishBtn').disabled=true
+  document.getElementById('publishBtn').innerHTML='Menyimpan...'
+
+  showLoading('Menyimpan tafsir...')
+
+const response = await fetch(API_URL,{
+  method:"POST",
+  body:new URLSearchParams({
+    action:"simpanTafsir",
+    surat:data.surat,
+    ayat:data.ayat,
+    judul:data.judul,
+    pentafsir:data.pentafsir,
+    isi:data.isi
+  })
+})
+
+const res = await response.json()
+
+alert(res.message)
+resetForm()
+loadTafsir()
+
+  })
+  .simpanTafsir(data)
+}
+
+/* ================= LIST ================= */
+
+function loadTafsir(){
+
+const response = await fetch(API_URL,{
+  method:"POST",
+  body:new URLSearchParams({
+    action:"getAllTafsir"
+  })
+})
+
+const data = await response.json()
+
+    let html = `
+      <table width="100%" cellspacing="0" style="
+        border-collapse:collapse;
+        background:white;
+        border-radius:15px;
+        overflow:hidden;
+      ">
+        <tr style="background:#f8fafc;">
+          <th style="padding:15px;text-align:left;">Surat</th>
+          <th style="padding:15px;text-align:left;">Ayat</th>
+          <th style="padding:15px;text-align:left;">Judul</th>
+          <th style="padding:15px;text-align:left;">Pentafsir</th>
+          <th style="padding:15px;text-align:left;">Ringkasan</th>
+          <th style="padding:15px;text-align:center;">Aksi</th>
+        </tr>
+    `
+
+    data.forEach(item=>{
+
+      html += `
+        <tr style="border-bottom:1px solid #eee;">
+          <td style="padding:15px;">
+  ${namaSurat[item.surat] || item.surat}
+</td>
+
+          <td style="padding:15px;">
+            ${item.ayat}
+          </td>
+
+          <td style="padding:15px;font-weight:bold;">
+            ${item.judul}
+          </td>
+
+          <td style="padding:15px;color:#0f766e;font-weight:500;">
+  ✍ ${item.pentafsir || '-'}
+</td>
+<td style="padding:15px;color:gray;">
+  ${item.isi.length > 50 ? item.isi.substring(0,50)+'...' : item.isi}
+</td>
+
+          <td style="padding:15px;text-align:center;">
+
+            <button onclick="editTafsir(
+              '${item.row}',
+              '${item.surat}',
+              '${item.ayat}',
+              '${item.judul}',
+              \`${item.isi}\`
+            )">
+              ✏
+            </button>
+
+            <button 
+              onclick="hapusTafsir('${item.row}')"
+              style="background:red;">
+              🗑
+            </button>
+
+          </td>
+        </tr>
+      `
+    })
+
+    // penutup table
+    html += `</table>`
+
+    document.getElementById('listTafsir').innerHTML = html
+
+  })
+  .getAllTafsir()
+}
+
+function editTafsir(row,surat,ayat,judul,isi){
+
+  editRow=row
+
+  document.getElementById('suratAdmin').value=surat
+  loadAyatAdmin()
+
+  setTimeout(()=>{
+    document.getElementById('ayat').value=ayat
+  },1000)
+
+  document.getElementById('judul').value=judul
+  document.getElementById('isi').value=isi
+}
+
+async function hapusTafsir(row){
+
+  if(!confirm('Hapus tafsir?')) return
+
+  const response = await fetch(API_URL,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"hapusTafsir",
+      row:row
+    })
+  })
+
+  const res = await response.json()
+
+  alert(res.message)
+  loadTafsir()
+}
+
+/* CLOCK */
+
+function startClock(){
+  setInterval(function(){
+    const now=new Date()
+    document.getElementById('clockBox').innerHTML=
+      now.toLocaleString('id-ID')
+  },1000)
+}
+
+init()
+startClock()
+
+function showLoading(text='Loading...'){
+  document.getElementById('loadingOverlay').style.display='flex'
+  document.getElementById('loadingText').innerHTML=text
+}
+
+function hideLoading(){
+  document.getElementById('loadingOverlay').style.display='none'
+}
+
+function logoutAdmin(){
+
+  document.getElementById('dashboard').style.display='none'
+
+  document.getElementById('userSection').style.display='block'
+
+  document.getElementById('mainFooter').style.display='block'
+
+  document.getElementById('adminLoginButton').style.display='block'
+
+  document.querySelector('.topbar h2').innerHTML =
+    '📖 Quran Tafsir'
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  })
+}
+
+</script>
+<footer id="mainFooter" style="
+  text-align:center;
+  padding:30px;
+  background:#111827;
+  color:#d1d5db;
+  margin-top:50px;
+  font-size:14px;
+">
+
+  <div style="
+    font-size:18px;
+    margin-bottom:10px;
+    color:#fbbf24;
+  ">
+    📖 Quran Tafsir
+  </div>
+
+  Developed with ❤️ for Islamic Education<br>
+
+  © 2026 Adri Putra Can — All Rights Reserved
+
+</footer>
+</body>
+</html>
