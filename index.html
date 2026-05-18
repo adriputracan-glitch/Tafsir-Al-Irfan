@@ -1038,14 +1038,15 @@ async function publishTafsir(){
 
 const response = await fetch(API_URL,{
   method:"POST",
-  body:new URLSearchParams({
-    action:"simpanTafsir",
-    surat:data.surat,
-    ayat:data.ayat,
-    judul:data.judul,
-    pentafsir:data.pentafsir,
-    isi:data.isi
-  })
+body:new URLSearchParams({
+  action:"simpanTafsir",
+  row:data.row, // penting
+  surat:data.surat,
+  ayat:data.ayat,
+  judul:data.judul,
+  pentafsir:data.pentafsir,
+  isi:data.isi
+})
 })
 
 const res = await response.json()
@@ -1121,9 +1122,9 @@ const data = await response.json()
   '${item.row}',
   '${item.surat}',
   '${item.ayat}',
-  '${item.judul}',
-  '${item.pentafsir}',
-  \`${item.isi}\`
+  '${encodeURIComponent(item.judul)}',
+  '${encodeURIComponent(item.pentafsir || "")}',
+  '${encodeURIComponent(item.isi)}'
 )">
               ✏
             </button>
@@ -1149,21 +1150,21 @@ const data = await response.json()
 
 function editTafsir(row,surat,ayat,judul,pentafsir,isi){
 
-  editRow=row
+  editRow = row
 
-  document.getElementById('suratAdmin').value=surat
+  document.getElementById('suratAdmin').value = surat
   loadAyatAdmin()
 
   setTimeout(()=>{
-    document.getElementById('ayat').value=ayat
-  },1000)
+    document.getElementById('ayat').value = ayat
+  },500)
 
-  document.getElementById('judul').value=judul
-  document.getElementById('pentafsir').value=pentafsir
+  document.getElementById('judul').value = decodeURIComponent(judul)
+  document.getElementById('pentafsir').value = decodeURIComponent(pentafsir)
+  document.getElementById('isi').value = decodeURIComponent(isi)
 
-  document.getElementById('isi').value=isi
+  previewAyat()
 }
-
 async function hapusTafsir(row){
 
   if(!confirm('Hapus tafsir?')) return
