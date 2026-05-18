@@ -368,6 +368,40 @@ textarea{
   to{transform:scale(1);opacity:1;}
 }
 
+  .mushaf-container{
+  max-width:1000px;
+  margin:30px auto;
+  background:#fffdf4;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.mushaf-header{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  color:#0f766e;
+  margin-bottom:30px;
+}
+
+.mushaf-arab{
+  direction:rtl;
+  text-align:right;
+  font-size:38px;
+  line-height:2.3;
+  font-family:'Traditional Arabic', serif;
+}
+
+.mushaf-ayat{
+  cursor:pointer;
+  padding:5px;
+  border-radius:10px;
+}
+
+.mushaf-ayat:hover{
+  background:#dcfce7;
+}
 </style>
 </head>
 
@@ -381,6 +415,11 @@ textarea{
   <h2>📖 Quran Tafsir Al Irfan</h2>
 
   <select id="suratSelect" onchange="loadSuratUser()"></select>
+
+  <select id="viewMode" onchange="loadSuratUser()">
+  <option value="card">📱 Mode Card</option>
+  <option value="mushaf">📖 Mode Mushaf</option>
+</select>
 
   <button 
   class="admin-btn" 
@@ -760,47 +799,85 @@ async function loadSuratUser(){
 
     const ayatTafsir = await response.json()
 
-    const container = document.getElementById('listAyat')
-    container.innerHTML=''
+const container = document.getElementById('listAyat')
+container.innerHTML=''
 
-    data.data.ayat.forEach(a=>{
+const mode = document.getElementById('viewMode').value
 
-      const adaTafsir = ayatTafsir.includes(String(a.nomorAyat))
+// ================= CARD MODE =================
+if(mode === "card"){
 
-      container.innerHTML += `
-        <div class="ayat-card"
-          onclick="lihatTafsir('${data.data.nomor}','${a.nomorAyat}')">
+  data.data.ayat.forEach(a=>{
 
-          <div class="nomor">${a.nomorAyat}</div>
+    const adaTafsir = ayatTafsir.includes(String(a.nomorAyat))
 
-          ${
-            adaTafsir ? `
-            <div style="
-              display:inline-block;
-              background:#dcfce7;
-              color:#166534;
-              padding:6px 12px;
-              border-radius:20px;
-              font-size:12px;
-              margin-top:10px;
-              font-weight:bold;
-            ">
-              📚 Tafsir tersedia
-            </div>
-            ` : ''
-          }
+    container.innerHTML += `
+      <div class="ayat-card"
+        onclick="lihatTafsir('${data.data.nomor}','${a.nomorAyat}')">
 
-          <div class="arab">${a.teksArab}</div>
-          <div class="latin">${a.teksLatin}</div>
-          <div>${a.teksIndonesia}</div>
+        <div class="nomor">${a.nomorAyat}</div>
 
-          <button class="audio-btn"
-            onclick="putarAudio(event,'${a.audio['01']}')">
-            ▶ Audio
-          </button>
-        </div>
-      `
-    })
+        ${
+          adaTafsir ? `
+          <div style="
+            display:inline-block;
+            background:#dcfce7;
+            color:#166534;
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:12px;
+            margin-top:10px;
+            font-weight:bold;
+          ">
+            📚 Tafsir tersedia
+          </div>
+          ` : ''
+        }
+
+        <div class="arab">${a.teksArab}</div>
+        <div class="latin">${a.teksLatin}</div>
+        <div>${a.teksIndonesia}</div>
+
+        <button class="audio-btn"
+          onclick="putarAudio(event,'${a.audio['01']}')">
+          ▶ Audio
+        </button>
+      </div>
+    `
+  })
+
+}
+
+// ================= MUSHAF MODE =================
+else{
+
+  let mushafHTML = `
+    <div class="mushaf-container">
+      <div class="mushaf-header">
+        ${data.data.namaLatin}
+      </div>
+
+      <div class="mushaf-arab">
+  `
+
+  data.data.ayat.forEach(a=>{
+
+    mushafHTML += `
+      <span 
+        class="mushaf-ayat"
+        onclick="lihatTafsir('${data.data.nomor}','${a.nomorAyat}')">
+        ${a.teksArab} ۝${a.nomorAyat}
+      </span>
+    `
+  })
+
+  mushafHTML += `
+      </div>
+    </div>
+  `
+
+  container.innerHTML = mushafHTML
+}
 
   }catch(err){
     console.log(err)
