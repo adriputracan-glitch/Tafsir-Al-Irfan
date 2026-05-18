@@ -1118,14 +1118,7 @@ const data = await response.json()
 
           <td style="padding:15px;text-align:center;">
 
-<button onclick="editTafsir(
-  '${item.row}',
-  '${item.surat}',
-  '${item.ayat}',
-  '${encodeURIComponent(item.judul)}',
-  '${encodeURIComponent(item.pentafsir || "")}',
-  '${encodeURIComponent(item.isi)}'
-)">
+<button onclick="editTafsir('${item.row}')">
               ✏
             </button>
 
@@ -1148,20 +1141,33 @@ const data = await response.json()
 
 }
 
-function editTafsir(row,surat,ayat,judul,pentafsir,isi){
+async function editTafsir(row){
+
+  const response = await fetch(API_URL,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"getAllTafsir"
+    })
+  })
+
+  const data = await response.json()
+
+  const item = data.find(x => String(x.row) === String(row))
+
+  if(!item){
+    alert("Data tidak ditemukan")
+    return
+  }
 
   editRow = row
 
-  document.getElementById('suratAdmin').value = surat
-  loadAyatAdmin()
+  document.getElementById('suratAdmin').value = item.surat
+  await loadAyatAdmin()
 
-  setTimeout(()=>{
-    document.getElementById('ayat').value = ayat
-  },500)
-
-  document.getElementById('judul').value = decodeURIComponent(judul)
-  document.getElementById('pentafsir').value = decodeURIComponent(pentafsir)
-  document.getElementById('isi').value = decodeURIComponent(isi)
+  document.getElementById('ayat').value = item.ayat
+  document.getElementById('judul').value = item.judul
+  document.getElementById('pentafsir').value = item.pentafsir || ''
+  document.getElementById('isi').value = item.isi
 
   previewAyat()
 }
